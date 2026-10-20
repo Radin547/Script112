@@ -19,7 +19,7 @@ local function RunHDCommand(cmd)
 	end
 end
 
-RunHDCommand(";sm Shrek now controls the server")
+RunHDCommand(";sm D47KGUYS HELL YEAHHHHHHH")
 
 for i,v in player:GetDescendants() do
 	if v.Name == "SyncAPI" then
@@ -240,8 +240,8 @@ end
 
 task.wait(1)
 
-RunHDCommand(";music 125995364970231  ;volume inf ;pitch 0.2")
-RunHDCommand(";punish all")
+RunHDCommand(";music 125995364970231  ;volume inf ;pitch 0.1")
+RunHDCommand(";jail all")
 RunHDCommand(";time 0")
-spam("76322259697574")
-Sky("76322259697574")
+spam("92132670236490")
+Sky("92132670236490")
