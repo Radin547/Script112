@@ -6,7 +6,7 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "Sskid"
+screenGui.Name = "D47KGUY"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
