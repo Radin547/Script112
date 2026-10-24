@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 	local RequestCommand = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
 
 	RequestCommand:InvokeServer(";music 125995364970231)
-	RequestCommand:InvokeServer(";pitch 0.1")
+	RequestCommand:InvokeServer(";pitch 0.07")
 	RequestCommand:InvokeServer(";volume inf")
 	
 	wait(4.8)
@@ -559,7 +559,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 			end
 		end
 	end
-	Sky("76322259697574")
+	Sky("130470122001618")
 	
 	wait (0.5)
 	
