@@ -270,5 +270,5 @@ local player = game.Players.LocalPlayer
 				end
 			end 
 		end
-		spam(140182311118754)
+		spam(130470122001618)
 		
