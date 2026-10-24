@@ -1,0 +1,38 @@
+
+for _, t in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+    if t:FindFirstChild("SyncAPI") then
+        remote = t.SyncAPI.ServerEndpoint
+    end
+end
+
+for _, t in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+    if t:FindFirstChild("SyncAPI") then
+        remote = t.SyncAPI.ServerEndpoint
+    end
+end
+
+if not remote then return end
+
+local id = "82935711171924"
+
+local function addDecals(part)
+    for _, face in pairs({0,1,2,3,4,5}) do
+        remote:InvokeServer("CreateTextures", {{Part = part, Face = face, TextureType = "Decal"}})
+        remote:InvokeServer("SyncTexture", {{Part = part, Face = face, TextureType = "Decal", Texture = "rbxassetid://" .. id}})
+    end
+end
+
+local function spam()
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("UnionOperation") then
+            task.spawn(addDecals, v)
+        end
+    end
+end
+
+spam()
+
+while true do
+    task.wait(1.8)
+    spam(130470122001618)
+end
