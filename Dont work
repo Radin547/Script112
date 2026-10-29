@@ -1,0 +1,2 @@
+local p = game.Players.LocalPlayer
+p:Kick("D4rK WaS HeRe")
