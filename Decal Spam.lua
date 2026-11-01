@@ -15,7 +15,7 @@ local sound = Instance.new("Sound")
 sound.SoundId = "rbxassetid://85390427326662"
 sound.Pitch = 0.1
 sound.Looped = true
-sound.Volume = 1
+sound.Volume = 999
 sound.Parent = workspace
 sound:Play()
 
