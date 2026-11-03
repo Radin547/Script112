@@ -1,0 +1,573 @@
+
+--F3x Skybox Maker By D47K
+
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+local ContentProvider = game:GetService("ContentProvider")
+local RS = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local MESH_ID = "rbxassetid://111891702759441"
+local RED = Color3.fromRGB(255, 0, 4)
+local BLACK = Color3.fromRGB(0, 0, 0)
+local WHITE = Color3.fromRGB(255, 255, 255)
+local GREEN = Color3.fromRGB(0, 255, 100)
+local FONT = Enum.Font.TitilliumWeb
+local env = (getgenv and getgenv()) or _G
+
+if playerGui:FindFirstChild("F3XSkyboxStudio") then
+	playerGui.F3XSkyboxStudio:Destroy()
+end
+
+
+local S = {
+	part = nil,
+	texture = "",
+	scale = 1000,
+	spinOn = false,
+	spin = Vector3.new(0, 20, 0), -- deg/sec per axis
+	rot = Vector3.new(0, 0, 0),
+	vortex = false,
+	vortexPower = 1,
+	pulse = 6, -- % scale pulse in vortex
+	fade = true, -- vortex: smooth colour crossfade (false = hard disco cuts)
+	fadeTime = 1.5, -- seconds per colour
+	follow = false,
+	lock = true,
+	strict = false, -- Fork3X / strict mode
+	spinSpeed = 1, -- master multiplier for the spin sliders
+	light = false, -- vortex light: brightness boost on the mesh
+	bright = 1.5,
+	volume = 5, -- HD Admin ;volume value
+	pitch = 1, -- HD Admin ;pitch value
+	hdPrefix = ";",
+	pos = Vector3.new(0, 0, 0),
+	anim = { on = false, fps = 4, loop = true, frames = {}, idx = 0, last = 0, current = nil },
+	busy = false,
+}
+local sent = {} -- last values pushed to the server
+
+
+local screen = Instance.new("ScreenGui")
+screen.Name = "F3XSkyboxStudio"
+screen.ResetOnSpawn = false
+screen.Parent = playerGui
+
+local function new(class, props, parent)
+	local o = Instance.new(class)
+	for k, v in pairs(props) do o[k] = v end
+	o.Parent = parent
+	return o
+end
+
+local function box(props, parent)
+	props.BackgroundColor3 = props.BackgroundColor3 or BLACK
+	props.BorderColor3 = RED
+	props.BorderSizePixel = 1
+	return new("Frame", props, parent)
+end
+
+local function label(parent, text, pos, size, align)
+	return new("TextLabel", {
+		Text = text, Position = pos, Size = size, BackgroundTransparency = 1,
+		TextColor3 = WHITE, TextScaled = true, Font = FONT,
+		TextXAlignment = align or Enum.TextXAlignment.Left,
+	}, parent)
+end
+
+local function button(parent, text, pos, size, cb)
+	local b = new("TextButton", {
+		Text = text, Position = pos, Size = size, BackgroundColor3 = BLACK,
+		BorderColor3 = RED, BorderSizePixel = 1, TextColor3 = WHITE,
+		TextScaled = true, Font = FONT, AutoButtonColor = false,
+	}, parent)
+	b.MouseEnter:Connect(function() b.BackgroundColor3 = Color3.fromRGB(40, 0, 0) end)
+	b.MouseLeave:Connect(function() b.BackgroundColor3 = BLACK end)
+	if cb then b.MouseButton1Click:Connect(cb) end
+	return b
+end
+
+local function input(parent, placeholder, pos, size)
+	return new("TextBox", {
+		Text = "", PlaceholderText = placeholder, PlaceholderColor3 = Color3.fromRGB(150, 150, 150),
+		Position = pos, Size = size, BackgroundColor3 = WHITE, BorderColor3 = RED,
+		BorderSizePixel = 1, TextColor3 = BLACK, TextScaled = true, Font = FONT,
+		ClearTextOnFocus = false,
+	}, parent)
+end
+
+local function toggle(parent, pos, size, text, init, cb)
+	local state = init
+	local b = button(parent, "", pos, size)
+	local function refresh()
+		b.Text = text .. ": " .. (state and "ON" or "OFF")
+		b.TextColor3 = state and GREEN or WHITE
+	end
+	b.MouseButton1Click:Connect(function()
+		state = not state
+		refresh()
+		cb(state)
+	end)
+	refresh()
+	return function(v) state = v; refresh() end
+end
+
+local function sliderRow(parent, y, name, min, max, init, cb)
+	local current = init
+	label(parent, name, UDim2.new(0, 4, 0, y), UDim2.new(0, 34, 0, 18))
+	local bar = new("Frame", {
+		Size = UDim2.new(1, -100, 0, 6), Position = UDim2.new(0, 40, 0, y + 6),
+		BackgroundColor3 = Color3.fromRGB(45, 45, 45), BorderSizePixel = 0,
+	}, parent)
+	local fill = new("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = RED, BorderSizePixel = 0 }, bar)
+	local hit = new("TextButton", {
+		Text = "", BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0.5, -9),
+	}, bar)
+	local tb = input(parent, "", UDim2.new(1, -56, 0, y), UDim2.new(0, 52, 0, 18))
+
+	local function show(v)
+		current = v
+		tb.Text = tostring(math.floor(v * 100 + 0.5) / 100)
+		fill.Size = UDim2.new(math.clamp((v - min) / (max - min), 0, 1), 0, 1, 0)
+	end
+	local function set(v)
+		show(v)
+		cb(v)
+	end
+	local dragging = false
+	local function fromX(x)
+		local a = math.clamp((x - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
+		set(min + (max - min) * a)
+	end
+	hit.InputBegan:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			fromX(i.Position.X)
+		end
+	end)
+	UIS.InputChanged:Connect(function(i)
+		if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+			fromX(i.Position.X)
+		end
+	end)
+	UIS.InputEnded:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end)
+	tb.FocusLost:Connect(function()
+		local n = tonumber(tb.Text)
+		if n then set(n) else show(current) end
+	end)
+	show(init)
+	return function(v) show(v); cb(v) end
+end
+
+
+local function makeWindow(titleText, pos, size, closable)
+	local frame = box({ Size = size, Position = pos, Active = true, Draggable = true }, screen)
+	local bar = new("TextLabel", {
+		Size = UDim2.new(1, 0, 0, 16), BackgroundColor3 = BLACK, BorderColor3 = RED, BorderSizePixel = 1,
+		Text = titleText, TextColor3 = WHITE, TextScaled = true, Font = FONT,
+	}, frame)
+	local body = new("Frame", {
+		Size = UDim2.new(1, 0, 1, -16), Position = UDim2.new(0, 0, 0, 16), BackgroundTransparency = 1,
+	}, frame)
+	local minimized = false
+	local minBtn = button(frame, "-", UDim2.new(1, closable and -34 or -17, 0, 0), UDim2.new(0, 16, 0, 16))
+	minBtn.ZIndex = 3
+	minBtn.MouseButton1Click:Connect(function()
+		minimized = not minimized
+		body.Visible = not minimized
+		minBtn.Text = minimized and "+" or "-"
+		frame.Size = minimized and UDim2.new(size.X.Scale, size.X.Offset, 0, 16) or size
+	end)
+	if closable then
+		local x = button(frame, "x", UDim2.new(1, -17, 0, 0), UDim2.new(0, 16, 0, 16), function() frame.Visible = false end)
+		x.ZIndex = 3
+	end
+	return frame, body
+end
+
+
+local cachedEndpoint
+local statusLabel
+
+local function status(text)
+	if statusLabel then statusLabel.Text = text end
+end
+
+local function scan(root)
+	if not root then return nil end
+	for _, o in ipairs(root:GetDescendants()) do
+		if o.Name == "SyncAPI" then
+			local ep = o:FindFirstChild("ServerEndpoint")
+			if ep then return ep end
+		end
+	end
+end
+
+local function findEndpoint()
+	if cachedEndpoint and cachedEndpoint.Parent then return cachedEndpoint end
+	cachedEndpoint = scan(player) or scan(player.Character) or scan(RS)
+	if not cachedEndpoint then -- fork fallback: any RemoteFunction called ServerEndpoint
+		for _, root in ipairs({ player, player.Character, RS }) do
+			if root then
+				for _, o in ipairs(root:GetDescendants()) do
+					if o:IsA("RemoteFunction") and o.Name == "ServerEndpoint" then
+						cachedEndpoint = o
+						break
+					end
+				end
+			end
+			if cachedEndpoint then break end
+		end
+	end
+	return cachedEndpoint
+end
+
+local function call(...)
+	local ep = findEndpoint()
+	if not ep then
+		status("Equip F3X first")
+		return false
+	end
+	local args = table.pack(...)
+	local tries = S.strict and 3 or 1
+	local ok, res
+	for _ = 1, tries do
+		ok, res = pcall(function() return ep:InvokeServer(table.unpack(args, 1, args.n)) end)
+		if ok then break end
+		task.wait(0.1)
+	end
+	if not ok then warn("[Skybox] " .. tostring(res)) end
+	if S.strict then task.wait(0.05) end
+	return ok, res
+end
+
+local function syncMesh(part, props)
+	if S.strict then -- strict: one property per request
+		for k, v in pairs(props) do
+			call("SyncMesh", { { Part = part, [k] = v } })
+			task.wait(0.08)
+		end
+	else
+		local e = { Part = part }
+		for k, v in pairs(props) do e[k] = v end
+		call("SyncMesh", { e })
+	end
+end
+
+local function assetUrl(id)
+	id = tostring(id or ""):gsub("%s", "")
+	if id == "" then return nil end
+	if id:match("^%d+$") then return "rbxassetid://" .. id end
+	return id
+end
+
+local texCache = {}
+
+local function httpGet(url)
+	local req = env.request or env.http_request or (env.syn and env.syn.request) or (env.http and env.http.request)
+	if req then
+		local ok, res = pcall(req, { Url = url, Method = "GET" })
+		if ok and res and res.StatusCode == 200 then return res.Body end
+	end
+	local ok, body = pcall(function() return game:HttpGet(url) end)
+	if ok and type(body) == "string" then return body end
+end
+
+local function resolveTexture(text)
+	text = tostring(text or ""):gsub("%s", "")
+	if text == "" then return nil end
+	local num = text:match("^%d+$") or text:match("rbxassetid://(%d+)") or text:match("[?&]id=(%d+)")
+	if not num then return text end
+	if texCache[num] then return "rbxassetid://" .. texCache[num] end
+
+	status("Resolving " .. num .. "...")
+	local img
+
+	local ok, objs = pcall(function() return game:GetObjects("rbxassetid://" .. num) end)
+	if ok and type(objs) == "table" then
+		for _, o in ipairs(objs) do
+			local d = ((o:IsA("Decal") or o:IsA("Texture")) and o)
+				or o:FindFirstChildWhichIsA("Decal", true)
+				or o:FindFirstChildWhichIsA("Texture", true)
+			if d then
+				local t = tostring(d.Texture)
+				img = t:match("id=(%d+)") or t:match("rbxassetid://(%d+)")
+			end
+			o:Destroy()
+			if img then break end
+		end
+	end
+
+	if not img then
+		local body = httpGet("https://assetdelivery.roblox.com/v1/asset/?id=" .. num)
+		if body then
+			if body:sub(1, 30):find("<roblox") then
+				img = body:match("asset/%?id=(%d+)") or body:match("rbxassetid://(%d+)")
+			else
+				img = num -- raw image data, so it already is an image id
+			end
+		end
+	end
+
+	if img then
+		texCache[num] = img
+		texCache[img] = img
+		status(img == num and "Image id ok" or ("Decal " .. num .. " -> image " .. img))
+		return "rbxassetid://" .. img
+	end
+	status("Can't resolve decal here, use an image id")
+	return "rbxassetid://" .. num
+end
+
+local function hasSky()
+	return S.part ~= nil and S.part.Parent ~= nil
+end
+
+local function createSky()
+	if S.busy then return end
+	local url = assetUrl(S.texture)
+	if not url then status("Paste a texture id first") return end
+	local char = player.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	if not root then status("No character") return end
+	S.busy = true
+
+	local cf = root.CFrame + Vector3.new(0, 6, 0)
+	local ok, part = call("CreatePart", "Normal", cf, workspace)
+	if not (ok and typeof(part) == "Instance") then
+		task.wait(0.2)
+		part = nil
+		for _, p in ipairs(workspace:GetChildren()) do
+			if p:IsA("BasePart") and (p.Position - cf.Position).Magnitude < 1 then part = p break end
+		end
+	end
+	if not part then
+		status("Create failed (F3X equipped?)")
+		S.busy = false
+		return
+	end
+
+
+	call("SetName", { part }, "Sky")
+	call("CreateMeshes", { { Part = part } })
+	task.wait(0.1)
+	local okM = call("SyncMesh", { { Part = part, MeshId = MESH_ID } })
+	local okT = call("SyncMesh", { { Part = part, TextureId = url } })
+	call("SyncMesh", { { Part = part, Scale = Vector3.new(S.scale, S.scale, S.scale) } })
+	call("SyncAnchor", { { Part = part, Anchored = true } })
+	call("SyncCollision", { { Part = part, CanCollide = false } }) -- no collisions
+	if S.lock then call("SetLocked", { part }, true) end
+	if not (okM and okT) then status("Mesh/texture request failed (see output)") end
+
+	S.part = part
+	S.pos = part.Position
+	S.rot = Vector3.new(0, 0, 0)
+	sent = { TextureId = url, Scale = Vector3.new(S.scale, S.scale, S.scale), VertexColor = Vector3.new(1, 1, 1), pos = S.pos }
+	S.busy = false
+	status("Skybox set")
+end
+
+local function deleteSky()
+	if not hasSky() then S.part = nil status("No skybox") return end
+	local part = S.part
+	S.part = nil
+	S.anim.on = false
+	call("SetLocked", { part }, false)
+	call("Remove", { part })
+	if part.Parent then call("Remove", { part }) end
+	status(part.Parent and "Delete may have failed" or "Skybox deleted")
+end
+
+
+local main, mainBody = makeWindow("F3x skybox", UDim2.new(0.45, 0, 0.3, 0), UDim2.new(0, 190, 0, 118), false)
+
+local mainBox = input(mainBody, "paste ur texture id here", UDim2.new(0, 4, 0, 4), UDim2.new(1, -8, 0, 22))
+local setBtn, delBtn, optBtn
+
+setBtn = button(mainBody, "Set", UDim2.new(0, 4, 0, 30), UDim2.new(0.5, -6, 0, 22), function()
+	local url = resolveTexture(mainBox.Text)
+	if not url then status("Paste a texture id first") return end
+	S.texture = url
+	if hasSky() then
+		status("Updated")
+	else
+		createSky()
+	end
+end)
+delBtn = button(mainBody, "Delete", UDim2.new(0.5, 2, 0, 30), UDim2.new(0.5, -6, 0, 22), deleteSky)
+optBtn = button(mainBody, "Options", UDim2.new(0, 4, 0, 56), UDim2.new(1, -8, 0, 22))
+statusLabel = label(mainBody, "Equip F3X, paste id, Set", UDim2.new(0, 4, 0, 82), UDim2.new(1, -8, 0, 14))
+
+-- live: editing the id updates an existing skybox after a short pause
+local typeVer = 0
+mainBox:GetPropertyChangedSignal("Text"):Connect(function()
+	typeVer += 1
+	local v = typeVer
+	task.delay(0.6, function()
+		if v == typeVer and hasSky() and mainBox.Text ~= "" then
+			S.texture = resolveTexture(mainBox.Text) or S.texture
+		end
+	end)
+end)
+
+local opt, optBody = makeWindow("Options", UDim2.new(0.45, 0, 0.3, 126), UDim2.new(0, 290, 0, 240), true)
+opt.Visible = false
+optBtn.MouseButton1Click:Connect(function() opt.Visible = not opt.Visible end)
+
+local tabNames = { "Spin", "Vortex", "Size", "Music", "Anim", "Images", "Misc" }
+local pages, tabBtns = {}, {}
+local function showTab(name)
+	for n, p in pairs(pages) do p.Visible = (n == name) end
+	for n, b in pairs(tabBtns) do b.TextColor3 = (n == name) and RED or WHITE end
+end
+for i, n in ipairs(tabNames) do
+	tabBtns[n] = button(optBody, n, UDim2.new((i - 1) / #tabNames, 1, 0, 0), UDim2.new(1 / #tabNames, -2, 0, 18), function() showTab(n) end)
+	pages[n] = new("Frame", {
+		Size = UDim2.new(1, 0, 1, -22), Position = UDim2.new(0, 0, 0, 22), BackgroundTransparency = 1, Visible = false,
+	}, optBody)
+end
+
+
+do
+	local p = pages.Spin
+	local setT = toggle(p, UDim2.new(0, 4, 0, 0), UDim2.new(1, -8, 0, 24), "Spin skybox", S.spinOn, function(v) S.spinOn = v end)
+	sliderRow(p, 32, "Speed", 0, 10, S.spinSpeed, function(v) S.spinSpeed = v end)
+	sliderRow(p, 54, "X", -360, 360, S.spin.X, function(v) S.spin = Vector3.new(v, S.spin.Y, S.spin.Z) end)
+	sliderRow(p, 76, "Y", -360, 360, S.spin.Y, function(v) S.spin = Vector3.new(S.spin.X, v, S.spin.Z) end)
+	sliderRow(p, 98, "Z", -360, 360, S.spin.Z, function(v) S.spin = Vector3.new(S.spin.X, S.spin.Y, v) end)
+	label(p, "Speed multiplies X/Y/Z (deg/s). Type any number. Live.", UDim2.new(0, 4, 0, 124), UDim2.new(1, -8, 0, 14))
+	button(p, "Reset rotation", UDim2.new(0, 4, 0, 144), UDim2.new(1, -8, 0, 22), function() S.rot = Vector3.new(0, 0, 0) end)
+end
+
+do
+	local p = pages.Vortex
+	toggle(p, UDim2.new(0, 4, 0, 0), UDim2.new(1, -8, 0, 22), "Vortex disco", S.vortex, function(v) S.vortex = v end)
+	sliderRow(p, 26, "Power", 0.2, 3, S.vortexPower, function(v) S.vortexPower = v end)
+	sliderRow(p, 46, "Pulse", 0, 30, S.pulse, function(v) S.pulse = v end)
+	toggle(p, UDim2.new(0, 4, 0, 68), UDim2.new(1, -8, 0, 20), "Fade", S.fade, function(v) S.fade = v end)
+	sliderRow(p, 90, "Time", 0.2, 5, S.fadeTime, function(v) S.fadeTime = math.max(v, 0.1) end)
+	toggle(p, UDim2.new(0, 4, 0, 114), UDim2.new(1, -8, 0, 20), "Vortex light", S.light, function(v) S.light = v end)
+	sliderRow(p, 136, "Bright", 0, 5, S.bright, function(v) S.bright = v end)
+	label(p, "Light: skybox brightness (1 = normal, above 1 glows, 0 = black). Fade ON blends colours, OFF hard-cuts.", UDim2.new(0, 4, 0, 158), UDim2.new(1, -8, 0, 40))
+end
+
+
+do
+	local p = pages.Size
+	local setSize
+	setSize = sliderRow(p, 4, "Size", 10, 3000, S.scale, function(v) S.scale = math.max(v, 1) end)
+	label(p, "Type any number in the box, or drag the line.", UDim2.new(0, 4, 0, 28), UDim2.new(1, -8, 0, 14))
+	for i, v in ipairs({ 100, 500, 1000, 2000 }) do
+		button(p, tostring(v), UDim2.new((i - 1) / 4, 2, 0, 50), UDim2.new(0.25, -4, 0, 22), function() setSize(v) end)
+	end
+end
+
+
+local frameBoxes = {}
+local setPlayBtn
+do
+	local p = pages.Anim
+	for i = 1, 8 do
+		local col, rowN = (i - 1) % 4, math.floor((i - 1) / 4)
+		local tb = input(p, "frame " .. i, UDim2.new(col / 4, 2, 0, rowN * 26), UDim2.new(0.25, -4, 0, 22))
+		frameBoxes[i] = tb
+	end
+	sliderRow(p, 58, "FPS", 1, 30, S.anim.fps, function(v) S.anim.fps = math.max(v, 0.5) end)
+
+	local playBtn
+	local function refreshPlay()
+		playBtn.Text = S.anim.on and "Stop" or "Play"
+		playBtn.TextColor3 = S.anim.on and GREEN or WHITE
+	end
+	setPlayBtn = refreshPlay
+	playBtn = button(p, "Play", UDim2.new(0, 4, 0, 84), UDim2.new(0.5, -6, 0, 24), function()
+		if S.anim.on then
+			S.anim.on = false
+		else
+			if not hasSky() then status("Create the skybox first") return end
+			S.anim.frames = {}
+			local list = {}
+			for _, tb in ipairs(frameBoxes) do
+				local url = resolveTexture(tb.Text)
+				if url then
+					table.insert(S.anim.frames, url)
+					local d = Instance.new("Decal")
+					d.Texture = url
+					table.insert(list, d)
+				end
+			end
+			if #S.anim.frames < 2 then status("Add at least 2 frames") return end
+			task.spawn(function() -- preload so frames don't flicker for you
+				pcall(function() ContentProvider:PreloadAsync(list) end)
+				for _, d in ipairs(list) do d:Destroy() end
+			end)
+			S.anim.idx = 0
+			S.anim.last = 0
+			S.anim.on = true
+		end
+		refreshPlay()
+	end)
+	toggle(p, UDim2.new(0.5, 2, 0, 84), UDim2.new(0.5, -6, 0, 24), "Loop", S.anim.loop, function(v) S.anim.loop = v end)
+	button(p, "Clear frames", UDim2.new(0, 4, 0, 114), UDim2.new(1, -8, 0, 22), function()
+		for _, tb in ipairs(frameBoxes) do tb.Text = "" end
+	end)
+end
+
+
+do
+	local p = pages.Images
+	local searchBox = input(p, "search decals...", UDim2.new(0, 4, 0, 0), UDim2.new(1, -112, 0, 22))
+	local goBtn = button(p, "Go", UDim2.new(1, -106, 0, 0), UDim2.new(0, 36, 0, 22))
+	local mode = "sky"
+	local modeBtn = button(p, "-> Sky", UDim2.new(1, -66, 0, 0), UDim2.new(0, 62, 0, 22), function() end)
+	modeBtn.MouseButton1Click:Connect(function()
+		mode = (mode == "sky") and "frame" or "sky"
+		modeBtn.Text = (mode == "sky") and "-> Sky" or "-> Frame"
+	end)
+
+	local scroll = new("ScrollingFrame", {
+		Size = UDim2.new(1, -8, 0, 150), Position = UDim2.new(0, 4, 0, 26), BackgroundColor3 = Color3.fromRGB(15, 15, 15),
+		BorderColor3 = RED, BorderSizePixel = 1, ScrollBarThickness = 4, CanvasSize = UDim2.new(0, 0, 0, 0),
+		AutomaticCanvasSize = Enum.AutomaticSize.Y,
+	}, p)
+	new("UIGridLayout", { CellSize = UDim2.new(0, 60, 0, 60), CellPadding = UDim2.new(0, 4, 0, 4) }, scroll)
+	local moreBtn = button(p, "More", UDim2.new(0, 4, 0, 180), UDim2.new(1, -8, 0, 20))
+
+	local page, lastKw = 1, ""
+	local function pick(id)
+		task.spawn(function()
+			if mode == "sky" then
+				local url = resolveTexture(id) -- decal id -> real image id
+				S.texture = url
+				local img = url and url:match("%d+")
+				if img then mainBox.Text = img end
+				if not hasSky() then createSky() end
+			else
+				for _, tb in ipairs(frameBoxes) do
+					if tb.Text == "" then tb.Text = tostring(id) break end
+				end
+			end
+		end)
+	end
+
+	local function search(kw, pg)
+		local req = env.request or env.http_request or (env.syn and env.syn.request) or (env.http and env.http.request)
+		if not req then
+			status("No HTTP request function here")
+			return
+		end
+		local url = ("https://apis.roblox.com/toolbox-service/v1/marketplace/13?keyword=%s&limit=30&pageNumber=%d")
+			:format(HttpService:UrlEncode(kw), pg)
+		local ok, res = pcall(req, { Url = url, Method = "GET" })
+		if not (ok and res and res.StatusCode == 200) then
+			status("Search failed")
+			return
+		end
+		local okJ, data = pca
