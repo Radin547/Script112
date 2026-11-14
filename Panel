@@ -1,0 +1,134 @@
+-- 021 UNIVERSAL HUB💫
+
+local CoreGui = game:GetService("CoreGui")
+
+local old = CoreGui:FindFirstChild("021_UNIVERSAL_HUB")
+if old then old:Destroy() end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "021_UNIVERSAL_HUB"
+gui.ResetOnSpawn = false
+gui.Parent = CoreGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.fromOffset(310, 440)
+frame.Position = UDim2.new(0.5, -155, 0.5, -220)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -85, 0, 42)
+title.Position = UDim2.fromOffset(10, 0)
+title.BackgroundTransparency = 1
+title.Text = "021 UNIVERSAL HUB"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 17
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = frame
+
+local close = Instance.new("TextButton")
+close.Size = UDim2.fromOffset(32, 30)
+close.Position = UDim2.new(1, -38, 0, 5)
+close.Text = "X"
+close.Parent = frame
+
+local minimize = Instance.new("TextButton")
+minimize.Size = UDim2.fromOffset(32, 30)
+minimize.Position = UDim2.new(1, -74, 0, 5)
+minimize.Text = "-"
+minimize.Parent = frame
+
+local list = Instance.new("ScrollingFrame")
+list.Position = UDim2.fromOffset(10, 48)
+list.Size = UDim2.new(1, -20, 1, -58)
+list.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+list.BorderSizePixel = 0
+list.ScrollBarThickness = 4
+list.Parent = frame
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 6)
+layout.Parent = list
+
+local scripts = {
+    {"021 Decal Spam HD Admin", "https://scriptblox.com/raw/Universal-Script-021-F3x-v2-236227"},
+    {"021 Decal Spam Normal", "https://scriptblox.com/raw/Universal-Script-021-Decal-Spam-236084"},
+    {"TSB God Auto Farm", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/projectbeta"},
+    {"Invisible Fly R6", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script378"},
+    {"FE Tool Giver", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script761"},
+    {"Universal God Mode", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script86"},
+    {"FE Homelander", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script96"},
+    {"Pro Click Panel OP", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script33"},
+    {"Dance Pack R6 + MJ", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script6"},
+    {"Neon Balls (Requires BTools)", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/scriptobfuscated"},
+    {"OP Tool Activator", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script201"},
+    {"Tool Enlarger", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script14"},
+
+    {"Polaria", "https://scriptblox.com/raw/F3X-Building-Tools-F3x-Polaria-226596"},
+    {"F3x Czerkidd", "https://scriptblox.com/raw/Universal-Script-czerkidd-v4-230838"},
+    {"F3x Rianz", "https://scriptblox.com/raw/Universal-Script-F3x-gui-rianz-rc7-216190"},
+    {"Sound Hack", "https://scriptblox.com/raw/Universal-Script-FE-AC6-Music-Vulnerablity-59292"},
+    {"White2Skiddy Mosque", "https://scriptblox.com/raw/Universal-Script-White2Skiddy-Mosque-Realm-f3X-234566"},
+    {"021 Realm", "https://pastefy.app/mpYsnX3d/raw"},
+}
+
+local function addButton(name, url)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -8, 0, 36)
+    button.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 12
+    button.Text = name
+    button.Parent = list
+    Instance.new("UICorner", button)
+
+    button.Activated:Connect(function()
+        button.Text = "Loading..."
+task.spawn(function()
+            local success, err = pcall(function()
+                local source = game:HttpGet(url)
+                assert(type(source) == "string" and #source > 0, "Empty script")
+                local fn = loadstring(source)
+                assert(fn, "Compilation failed")
+                fn()
+            end)
+
+            button.Text = name
+
+            if not success then
+                warn("[021 HUB] " .. name .. ": " .. tostring(err))
+            end
+        end)
+    end)
+end
+
+for _, data in ipairs(scripts) do
+    addButton(data[1], data[2])
+end
+
+local function updateCanvas()
+    list.CanvasSize = UDim2.fromOffset(0, layout.AbsoluteContentSize.Y + 10)
+end
+
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
+updateCanvas()
+
+local minimized = false
+
+minimize.Activated:Connect(function()
+    minimized = not minimized
+    list.Visible = not minimized
+    frame.Size = minimized
+        and UDim2.fromOffset(310, 42)
+        or UDim2.fromOffset(310, 440)
+    minimize.Text = minimized and "+" or "-"
+end)
+
+close.Activated:Connect(function()
+    gui:Destroy()
+end)
