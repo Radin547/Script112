@@ -1,0 +1,311 @@
+-- 021 UNIVERSAL HUB (FINAL PRO VERSION - NO SCRIPTBLOX)
+
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local old = CoreGui:FindFirstChild("021_UNIVERSAL_HUB")
+if old then old:Destroy() end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "021_HUB"
+gui.ResetOnSpawn = false
+gui.Parent = CoreGui
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.fromOffset(380, 500)
+frame.Position = UDim2.new(0.5, -190, 0.5, -250)
+frame.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+
+local stroke = Instance.new("UIStroke", frame)
+local gradient = Instance.new("UIGradient", stroke)
+gradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 80, 140)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(40, 40, 70))
+})
+stroke.Thickness = 1.5
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -90, 0, 40)
+title.Position = UDim2.fromOffset(12, 0)
+title.BackgroundTransparency = 1
+title.Text = "⚡ 021 UNIVERSAL HUB"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 15
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = frame
+
+local close = Instance.new("TextButton")
+close.Size = UDim2.fromOffset(28, 28)
+close.Position = UDim2.new(1, -35, 0, 6)
+close.BackgroundColor3 = Color3.fromRGB(230, 60, 60)
+close.Text = "✕"
+close.TextColor3 = Color3.fromRGB(255, 255, 255)
+close.Font = Enum.Font.GothamBold
+close.TextSize = 12
+close.Parent = frame
+Instance.new("UICorner", close).CornerRadius = UDim.new(0, 6)
+
+local minimize = Instance.new("TextButton")
+minimize.Size = UDim2.fromOffset(28, 28)
+minimize.Position = UDim2.new(1, -70, 0, 6)
+minimize.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+minimize.Text = "—"
+minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimize.Font = Enum.Font.GothamBold
+minimize.TextSize = 12
+minimize.Parent = frame
+Instance.new("UICorner", minimize).CornerRadius = UDim.new(0, 6)
+
+-- نوار تب‌ها (فقط خانه و اسکریپت‌ها)
+local tabButtonsFrame = Instance.new("Frame")
+tabButtonsFrame.Size = UDim2.new(1, -24, 0, 32)
+tabButtonsFrame.Position = UDim2.fromOffset(12, 45)
+tabButtonsFrame.BackgroundTransparency = 1
+tabButtonsFrame.Parent = frame
+
+local homeTabBtn = Instance.new("TextButton")
+homeTabBtn.Size = UDim2.new(0.5, -4, 1, 0)
+homeTabBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+homeTabBtn.Text = "🏠 خانه"
+homeTabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+homeTabBtn.Font = Enum.Font.GothamBold
+homeTabBtn.TextSize = 13
+homeTabBtn.Parent = tabButtonsFrame
+Instance.new("UICorner", homeTabBtn).CornerRadius = UDim.new(0, 6)
+
+local scriptsTabBtn = Instance.new("TextButton")
+scriptsTabBtn.Size = UDim2.new(0.5, -4, 1, 0)
+scriptsTabBtn.Position = UDim2.new(0.5, 4, 0, 0)
+scriptsTabBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+scriptsTabBtn.TextColor3 = Color3.fromRGB(150, 150, 170)
+scriptsTabBtn.Text = "📜 اسکریپت‌ها"
+scriptsTabBtn.Font = Enum.Font.GothamBold
+scriptsTabBtn.TextSize = 13
+scriptsTabBtn.Parent = tabButtonsFrame
+Instance.new("UICorner", scriptsTabBtn).CornerRadius = UDim.new(0, 6)
+
+local container = Instance.new("Frame")
+container.Size = UDim2.new(1, -24, 1, -90)
+container.Position = UDim2.fromOffset(12, 85)
+container.BackgroundTransparency = 1
+container.Parent = frame
+
+-- تب ۱: خانه
+local homePage = Instance.new("Frame")
+homePage.Size = UDim2.new(1, 0, 1, 0)
+homePage.BackgroundTransparency = 1
+homePage.Visible = true
+homePage.Parent = container
+
+local profileCard = Instance.new("Frame")
+profileCard.Size = UDim2.new(1, 0, 0, 110)
+profileCard.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+profileCard.Parent = homePage
+Instance.new("UICorner", profileCard).CornerRadius = UDim.new(0, 8)
+
+local avatarImg = Instance.new("ImageLabel")
+avatarImg.Size = UDim2.fromOffset(80, 80)
+avatarImg.Position = UDim2.fromOffset(15, 15)
+avatarImg.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+avatarImg.Image = Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+avatarImg.Parent = profileCard
+Instance.new("UICorner", avatarImg).CornerRadius = UDim.new(1, 0)
+
+local displayNameLabel = Instance.new("TextLabel")
+displayNameLabel.Size = UDim2.new(1, -115, 0, 24)
+displayNameLabel.Position = UDim2.fromOffset(105, 22)
+displayNameLabel.BackgroundTransparency = 1
+displayNameLabel.Text = LocalPlayer.DisplayName
+displayNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+displayNameLabel.Font = Enum.Font.GothamBold
+displayNameLabel.TextSize = 16
+displayNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+displayNameLabel.Parent = profileCard
+
+local usernameLabel = Instance.new("TextLabel")
+usernameLabel.Size = UDim2.new(1, -115, 0, 20)
+usernameLabel.Position = UDim2.fromOffset(105, 46)
+usernameLabel.BackgroundTransparency = 1
+usernameLabel.Text = "@" .. LocalPlayer.Name
+usernameLabel.TextColor3 = Color3.fromRGB(150, 150, 170)
+usernameLabel.Font = Enum.Font.Gotham
+usernameLabel.TextSize = 13
+usernameLabel.TextXAlignment = Enum.TextXAlignment.Left
+usernameLabel.Parent = profileCard
+
+local idLabel = Instance.new("TextLabel")
+idLabel.Size = UDim2.new(1, -115, 0, 20)
+idLabel.Position = UDim2.fromOffset(105, 68)
+idLabel.BackgroundTransparency = 1
+idLabel.Text = "آیدی: " .. LocalPlayer.UserId
+idLabel.TextColor3 = Color3.fromRGB(110, 110, 130)
+idLabel.Font = Enum.Font.Gotham
+idLabel.TextSize = 12
+idLabel.TextXAlignment = Enum.TextXAlignment.Left
+idLabel.Parent = profileCard
+
+local welcomeText = Instance.new("TextLabel")
+welcomeText.Size = UDim2.new(1, 0, 0, 40)
+welcomeText.Position = UDim2.fromOffset(0, 125)
+welcomeText.BackgroundTransparency = 1
+welcomeText.Text = "خوش آمدید! تمام اسکریپت‌ها و ابزارها در بخش اسکریپت‌ها آماده هستند."
+welcomeText.TextColor3 = Color3.fromRGB(180, 180, 200)
+welcomeText.Font = Enum.Font.Gotham
+welcomeText.TextSize = 13
+welcomeText.TextWrapped = true
+welcomeText.TextXAlignment = Enum.TextXAlignment.Left
+welcomeText.Parent = homePage
+
+-- تب ۲: اسکریپت‌ها
+local scriptsPage = Instance.new("Frame")
+scriptsPage.Size = UDim2.new(1, 0, 1, 0)
+scriptsPage.BackgroundTransparency = 1
+scriptsPage.Visible = false
+scriptsPage.Parent = container
+
+local searchBox = Instance.new("TextBox")
+searchBox.Size = UDim2.new(1, 0, 0, 32)
+searchBox.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+searchBox.PlaceholderText = "🔍 جستجو در اسکریپت‌ها..."
+searchBox.Text = ""
+searchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+searchBox.PlaceholderColor3 = Color3.fromRGB(130, 130, 150)
+searchBox.Font = Enum.Font.Gotham
+searchBox.TextSize = 13
+searchBox.Parent = scriptsPage
+Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 6)
+
+local list = Instance.new("ScrollingFrame")
+list.Position = UDim2.fromOffset(0, 40)
+list.Size = UDim2.new(1, 0, 1, -40)
+list.BackgroundTransparency = 1
+list.BorderSizePixel = 0
+list.ScrollBarThickness = 3
+list.Parent = scriptsPage
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 6)
+layout.Parent = list
+
+local scripts = {
+    {"Bring/Fling Players", "https://raw.githubusercontent.com/Bac0nHck/Scripts/main/BringFlingPlayers"},
+    {"Nazi Flag", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script431"},
+    {"Remote Spy/Binder", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/b4inder"},
+    {"Custom Chat Crasher", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script516"},
+    {"Door H4CK", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/scriptHack1"},
+    {"021 Decal Spam HD Admin", "https://scriptblox.com/raw/Universal-Script-021-F3x-v2-236227"},
+    {"021 Decal Spam Normal", "https://scriptblox.com/raw/Universal-Script-021-Decal-Spam-236084"},
+    {"TSB God Auto Farm", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/projectbeta"},
+    {"Invisible Fly R6", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script378"},
+    {"FE Tool Giver", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script761"},
+    {"Universal God Mode", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script86"},
+    {"FE Homelander", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script96"},
+    {"Pro Click Panel OP", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script33"},
+    {"Dance Pack R6 + MJ", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script6"},
+    {"Neon Balls (Requires BTools)", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/scriptobfuscated"},
+    {"OP Tool Activator", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script201"},
+    {"Tool Enlarger", "https://raw.githubusercontent.com/ermiya1231/Script1/refs/heads/main/script14"},
+    {"Polaria", "https://scriptblox.com/raw/F3X-Building-Tools-F3x-Polaria-226596"},
+    {"F3x Czerkidd", "https://scriptblox.com/raw/Universal-Script-czerkidd-v4-230838"},
+    {"F3x Rianz", "https://scriptblox.com/raw/Universal-Script-F3x-gui-rianz-rc7-216190"},
+    {"Sound Hack", "https://scriptblox.com/raw/Universal-Script-FE-AC6-Music-Vulnerablity-59292"},
+    {"White2Skiddy Mosque", "https://scriptblox.com/raw/Universal-Script-White2Skiddy-Mosque-Realm-f3X-234566"},
+    {"021 Realm", "https://pastefy.app/mpYsnX3d/raw"},
+}
+
+local buttonList = {}
+
+local function updateCanvas()
+    list.CanvasSize = UDim2.fromOffset(0, layout.AbsoluteContentSize.Y + 10)
+end
+
+local function addButton(name, url)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -4, 0, 36)
+    button.BackgroundColor3 = Color3.fromRGB(28, 28, 38)
+    button.TextColor3 = Color3.fromRGB(230, 230, 250)
+    button.Font = Enum.Font.GothamMedium
+    button.TextSize = 13
+    button.Text = name
+    button.Parent = list
+    Instance.new("UICorner", button).CornerRadius = UDim.new(0, 6)
+
+    table.insert(buttonList, {Btn = button, Name = name:lower()})
+
+    button.Activated:Connect(function()
+        button.Text = "⏳ در حال اجرا..."
+        task.spawn(function()
+            local success, err = pcall(function()
+                local source = game:HttpGet(url)
+                assert(type(source) == "string" and #source > 0, "Empty script")
+                local fn = loadstring(source)
+                assert(fn, "Compilation failed")
+                fn()
+            end)
+
+            button.Text = success and "✅ اجرا شد!" or "❌ خطا!"
+            task.wait(1.5)
+            button.Text = name
+
+            if not success then
+                warn("[021 HUB] " .. name .. ": " .. tostring(err))
+            end
+        end)
+    end)
+end
+
+for _, data in ipairs(scripts) do
+    addButton(data[1], data[2])
+end
+
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvas)
+updateCanvas()
+
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+    local query = searchBox.Text:lower()
+    for _, item in ipairs(buttonList) do
+        if query == "" or item.Name:find(query) then
+            item.Btn.Visible = true
+        else
+            item.Btn.Visible = false
+        end
+    end
+    updateCanvas()
+end)
+
+-- سیستم کلیک تب‌ها (فبین خانه و اسکریپت‌ها)
+local function switchTab(activeBtn, activePage)
+    homePage.Visible = (activePage == homePage)
+    scriptsPage.Visible = (activePage == scriptsPage)
+
+    homeTabBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    homeTabBtn.TextColor3 = Color3.fromRGB(150, 150, 170)
+    scriptsTabBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    scriptsTabBtn.TextColor3 = Color3.fromRGB(150, 150, 170)
+
+    activeBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+    activeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+end
+
+homeTabBtn.Activated:Connect(function() switchTab(homeTabBtn, homePage) end)
+scriptsTabBtn.Activated:Connect(function() switchTab(scriptsTabBtn, scriptsPage) end)
+
+local minimized = false
+minimize.Activated:Connect(function()
+    minimized = not minimized
+    tabButtonsFrame.Visible = not minimized
+    container.Visible = not minimized
+    frame.Size = minimized and UDim2.fromOffset(380, 45) or UDim2.fromOffset(380, 500)
+    minimize.Text = minimized and "+" or "—"
+end)
+
+close.Activated:Connect(function()
+    gui:Destroy()
+end)
