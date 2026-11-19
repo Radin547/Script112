@@ -1,0 +1,128 @@
+-- Soviet Flag Builder (F3X SyncAPI)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+if not LocalPlayer then
+	Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+	LocalPlayer = Players.LocalPlayer
+end
+
+local function findSyncAPI()
+	local roots = {
+		LocalPlayer:FindFirstChild("Backpack"),
+		LocalPlayer.Character,
+		ReplicatedStorage,
+		workspace
+	}
+	for _, root in ipairs(roots) do
+		if root then
+			for _, obj in ipairs(root:GetDescendants()) do
+				if obj.Name == "SyncAPI" and obj:FindFirstChild("ServerEndpoint") then
+					return obj.ServerEndpoint
+				end
+			end
+		end
+	end
+	return nil
+end
+
+local function spawnSovietFlag()
+	local ServerEndpoint = findSyncAPI()
+	if not ServerEndpoint then
+		warn("[Soviet Flag] SyncAPI یافت نشد!")
+		return
+	end
+
+	local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+	local rootPart = character:WaitForChild("HumanoidRootPart")
+	local origin = rootPart.CFrame * CFrame.new(0, 0, -14)
+	local created = {}
+
+	local function sync(args)
+		local ok, res = pcall(function()
+			return ServerEndpoint:InvokeServer(unpack(args))
+		end)
+		if not ok then
+			warn("[Soviet Flag] Sync Error: " .. tostring(res))
+		end
+		return res
+	end
+
+	local function makePart(shape, localCF, size, color, material, canCollide)
+		local cf = origin * localCF
+		local part = sync({"CreatePart", shape or "Normal", cf, workspace})
+		if not part then return nil end
+		table.insert(created, part)
+
+		sync({"SyncAnchor", {{Part = part, Anchored = true}}})
+		sync({"SyncCollision", {{Part = part, CanCollide = canCollide ~= false}}})
+		sync({"SyncResize", {{Part = part, Size = size, CFrame = cf}}})
+		sync({"SyncColor", {{Part = part, Color = color, UnionColoring = true}}})
+		sync({"SyncMaterial", {{
+			Part = part,
+			Material = material or Enum.Material.SmoothPlastic,
+			Transparency = 0
+		}}})
+		return part
+	end
+
+	local red = Color3.fromRGB(205, 25, 25)
+	local gold = Color3.fromRGB(245, 200, 35)
+	local poleColor = Color3.fromRGB(210, 210, 215)
+
+	local poleX = -9
+	local poleH = 22
+	local flagW = 16
+	local flagH = 10
+	local flagTopY = 19.5
+	local flagCenterY = flagTopY - flagH / 2
+	local flagCenterX = poleX + 0.4 + flagW / 2
+	local z0 = 0
+
+	-- میله و سر پرچم
+	makePart("Cylinder", CFrame.new(poleX, poleH / 2, z0) * CFrame.Angles(0, 0, math.rad(90)), Vector3.new(poleH, 0.7, 0.7), poleColor, Enum.Material.Metal, true)
+	makePart("Ball", CFrame.new(poleX, poleH + 0.4, z0), Vector3.new(1.2, 1.2, 1.2), gold, Enum.Material.Metal, false)
+
+	-- بدنه قرمز پرچم
+	makePart("Normal", CFrame.new(flagCenterX, flagCenterY, z0), Vector3.new(flagW, flagH, 0.35), red, Enum.Material.Fabric, false)
+
+	-- ستاره زرد بالا سمت چپ
+	local starX = poleX + 3.6
+	local starY = flagTopY - 2.4
+	local starZ = z0 + 0.25
+
+	makePart("Cylinder", CFrame.new(starX, starY, starZ) * CFrame.Angles(math.rad(90), 0, 0), Vector3.new(0.16, 1.4, 1.4), gold, Enum.Material.SmoothPlastic, false)
+	for i = 0, 4 do
+		local ang = math.rad(90 + i * 72)
+		local px = starX + math.cos(ang) * 0.95
+		local py = starY + math.sin(ang) * 0.95
+		makePart("Normal", CFrame.new(px, py, starZ + 0.03) * CFrame.Angles(0, 0, ang - math.rad(90)), Vector3.new(0.42, 1.05, 0.16), gold, Enum.Material.SmoothPlastic, false)
+	end
+
+	-- داس و چکش طلایی زیر ستاره
+	local emX = starX
+	local emY = starY - 2.1
+	local emZ = z0 + 0.25
+
+	-- چکش (مورب)
+	makePart("Normal", CFrame.new(emX - 0.15, emY - 0.1, emZ) * CFrame.Angles(0, 0, math.rad(-42)), Vector3.new(0.28, 1.75, 0.16), gold, Enum.Material.SmoothPlastic, false)
+	makePart("Normal", CFrame.new(emX + 0.32, emY + 0.42, emZ + 0.02) * CFrame.Angles(0, 0, math.rad(-42)), Vector3.new(0.85, 0.32, 0.18), gold, Enum.Material.SmoothPlastic, false)
+
+	-- داس (قوس با پارت‌های زاویه‌دار)
+	for i = -2, 2 do
+		local a = math.rad(i * 32)
+		local sx = emX + math.sin(a) * 0.72
+		local sy = emY - math.cos(a) * 0.65 + 0.15
+		makePart("Normal", CFrame.new(sx, sy, emZ + 0.04) * CFrame.Angles(0, 0, a), Vector3.new(0.28, 0.58, 0.16), gold, Enum.Material.SmoothPlastic, false)
+	end
+
+	if #created > 0 then
+		sync({"CreateGroup", "Model", workspace, created})
+	end
+
+	print("[Soviet Flag] پرچم شوروی ساخته شد.")
+end
+
+spawnSovietFlag()
