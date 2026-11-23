@@ -1,0 +1,254 @@
+-- Seamless Rainbow Ring Around Waist When Building Tools Are in Inventory (via SyncAPI)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+if not LocalPlayer then
+	Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+	LocalPlayer = Players.LocalPlayer
+end
+
+local RING_SEGMENTS = 36
+local RING_RADIUS = 5.5
+local RING_HEIGHT_OFFSET = 0.2 -- هم‌سطح کمر (نسبت به HumanoidRootPart)
+local RING_THICKNESS = 0.34
+local ROTATION_SPEED = 2.4
+local CHECK_INTERVAL = 0.25
+local SYNC_MOVE_INTERVAL = 0.08
+
+local activeParts = {}
+local isSpawning = false
+local isCleaning = false
+local ringActive = false
+local ringAngle = 0
+local lastSyncMove = 0
+
+local function findSyncAPI()
+	local roots = {
+		LocalPlayer:FindFirstChild("Backpack"),
+		LocalPlayer.Character,
+		ReplicatedStorage,
+		workspace
+	}
+	for _, root in ipairs(roots) do
+		if root then
+			for _, obj in ipairs(root:GetDescendants()) do
+				if obj.Name == "SyncAPI" and obj:FindFirstChild("ServerEndpoint") then
+					return obj.ServerEndpoint
+				end
+			end
+		end
+	end
+	return nil
+end
+
+local ServerEndpoint = findSyncAPI()
+if not ServerEndpoint then
+	warn("[Rainbow Ring] SyncAPI پیدا نشد!")
+	return
+end
+
+local function sync(args)
+	local ok, res = pcall(function()
+		return ServerEndpoint:InvokeServer(unpack(args))
+	end)
+	if not ok then
+		return nil
+	end
+	return res
+end
+
+local function hasBuildingTools()
+	local containers = {
+		LocalPlayer:FindFirstChild("Backpack"),
+		LocalPlayer.Character
+	}
+	for _, container in ipairs(containers) do
+		if container then
+			for _, item in ipairs(container:GetChildren()) do
+				if item:IsA("Tool") then
+					local lowerName = item.Name:lower()
+					if lowerName:find("building", 1, true)
+						or lowerName:find("btools", 1, true)
+						or lowerName:find("f3x", 1, true)
+						or item:FindFirstChild("SyncAPI") then
+						return true
+					end
+				end
+			end
+		end
+	end
+	return false
+end
+
+local function getRainbowColor(t)
+	return Color3.fromHSV(t % 1, 0.95, 1)
+end
+
+local function getWaistPosition(character, rootPart)
+	local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+	if torso then
+		return Vector3.new(rootPart.Position.X, torso.Position.Y, rootPart.Position.Z)
+	end
+	return Vector3.new(rootPart.Position.X, rootPart.Position.Y + RING_HEIGHT_OFFSET, rootPart.Position.Z)
+end
+
+local function getSegmentCFrame(waistPos, index, angleOffset)
+	local step = (math.pi * 2) / RING_SEGMENTS
+	local a0 = angleOffset + index * step
+	local a1 = a0 + step
+
+	local p0 = Vector3.new(
+		waistPos.X + math.cos(a0) * RING_RADIUS,
+		waistPos.Y,
+		waistPos.Z + math.sin(a0) * RING_RADIUS
+	)
+	local p1 = Vector3.new(
+		waistPos.X + math.cos(a1) * RING_RADIUS,
+		waistPos.Y,
+		waistPos.Z + math.sin(a1) * RING_RADIUS
+	)
+
+	local mid = (p0 + p1) * 0.5
+	local dir = (p1 - p0).Unit
+	local up = Vector3.new(0, 1, 0)
+	local right = dir:Cross(up).Unit
+
+	return CFrame.fromMatrix(mid, dir, up, -right)
+end
+
+local function getSegmentLength()
+	local step = (math.pi * 2) / RING_SEGMENTS
+	local chord = 2 * RING_RADIUS * math.sin(step * 0.5)
+	return chord * 1.12
+end
+
+local function clearRing()
+	if isCleaning or #activeParts == 0 then
+		ringActive = false
+		return
+	end
+	isCleaning = true
+	ringActive = false
+
+	local toDelete = {}
+	for _, entry in ipairs(activeParts) do
+		if entry.Part and entry.Part.Parent then
+			table.insert(toDelete, entry.Part)
+		end
+	end
+	activeParts = {}
+
+	if #toDelete > 0 then
+		sync({"Remove", toDelete})
+	end
+
+	isCleaning = false
+end
+
+local function spawnRing()
+	if isSpawning or ringActive then return end
+	local character = LocalPlayer.Character
+	local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+	if not rootPart then return end
+
+	isSpawning = true
+	clearRing()
+
+	local waistPos = getWaistPosition(character, rootPart)
+	local segSize = Vector3.new(getSegmentLength(), RING_THICKNESS, RING_THICKNESS)
+	local colorBatch = {}
+	local resizeBatch = {}
+	local anchorBatch = {}
+	local collisionBatch = {}
+	local materialBatch = {}
+	local built = {}
+
+	for i = 0, RING_SEGMENTS - 1 do
+		if not hasBuildingTools() then
+			break
+		end
+
+		local cf = getSegmentCFrame(waistPos, i, ringAngle)
+		local part = sync({"CreatePart", "Normal", cf, workspace})
+		if part then
+			local col = getRainbowColor(i / RING_SEGMENTS)
+			table.insert(built, {Part = part, Index = i})
+			table.insert(anchorBatch, {Part = part, Anchored = true})
+			table.insert(collisionBatch, {Part = part, CanCollide = false})
+			table.insert(resizeBatch, {Part = part, Size = segSize, CFrame = cf})
+			table.insert(colorBatch, {Part = part, Color = col, UnionColoring = true})
+			table.insert(materialBatch, {Part = part, Material = Enum.Material.Neon, Transparency = 0})
+		end
+	end
+
+	if #built > 0 then
+		sync({"SyncAnchor", anchorBatch})
+		sync({"SyncCollision", collisionBatch})
+		sync({"SyncResize", resizeBatch})
+		sync({"SyncColor", colorBatch})
+		sync({"SyncMaterial", materialBatch})
+		activeParts = built
+		ringActive = hasBuildingTools()
+	end
+
+	isSpawning = false
+
+	if not hasBuildingTools() then
+		clearRing()
+	end
+end
+
+task.spawn(function()
+	while true do
+		local equippedOrInBag = hasBuildingTools()
+		if equippedOrInBag and not ringActive and not isSpawning then
+			spawnRing()
+		elseif not equippedOrInBag and (ringActive or #activeParts > 0) then
+			clearRing()
+		end
+		task.wait(CHECK_INTERVAL)
+	end
+end)
+
+RunService.Heartbeat:Connect(function(dt)
+	if not ringActive or isSpawning or isCleaning or #activeParts == 0 then
+		return
+	end
+
+	ringAngle = (ringAngle + dt * ROTATION_SPEED) % (math.pi * 2)
+
+	local now = os.clock()
+	if (now - lastSyncMove) < SYNC_MOVE_INTERVAL then
+		return
+	end
+	lastSyncMove = now
+
+	local character = LocalPlayer.Character
+	local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+	if not rootPart then return end
+
+	local waistPos = getWaistPosition(character, rootPart)
+	local moveBatch = {}
+	local colorBatch = {}
+	local hueShift = os.clock() * 0.35
+
+	for _, entry in ipairs(activeParts) do
+		local part = entry.Part
+		if part and part.Parent then
+			local cf = getSegmentCFrame(waistPos, entry.Index, ringAngle)
+			local col = getRainbowColor((entry.Index / RING_SEGMENTS) + hueShift)
+			table.insert(moveBatch, {Part = part, CFrame = cf})
+			table.insert(colorBatch, {Part = part, Color = col, UnionColoring = true})
+		end
+	end
+
+	if #moveBatch > 0 then
+		task.spawn(function()
+			sync({"SyncMove", moveBatch})
+			sync({"SyncColor", colorBatch})
+		end)
+	end
+end)
